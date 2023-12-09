@@ -1,0 +1,254 @@
+#25. Вводится месяц и день этого года (2022), требуется вывести день недели.
+
+#Mon = 0x4D
+#Tue = 0x75
+#Wed = 0x57
+#Thu = 0x68
+#Fri = 0x46
+#Sat = 0x74
+#Sun = 0x6E
+#Err = 0x45
+
+#Data in Data_memory
+addi    sp, zero, 0x3fc
+addi    sp, sp, -28
+addi    t1, zero, 0x4D
+sw      t1, 0x0(sp)   #write Mon in Data_memory 0x4D6F6E
+addi    t1, zero, 0x75
+sw      t1, 0x4(sp)   #write Tue in Data_memory 0x547565
+addi    t1, zero, 0x57
+sw      t1, 0x8(sp)   #write Wed in Data_memory 0x576564
+addi    t1, zero, 0x68
+sw      t1, 0xC(sp)   #write Thu in Data_memory 0x546875
+addi    t1, zero, 0x46
+sw      t1, 0x10(sp)   #write Fri in Data_memory 0x467269
+addi    t1, zero, 0x74
+sw      t1, 0x14(sp)   #write Sat in Data_memory 0x536174
+addi    t1, zero, 0x6E
+sw      t1, 0x18(sp)   #write Sun in Data_memory 0x53756E
+addi    t1, zero, 0x45
+sw      t1, 0x1C(sp)   #write Err in Data_memory 0x457272
+addi    t1, zero, 0
+
+#Input data:
+addi    s0, zero, 3     #month (We can change that)
+addi    s1, zero, 10    #day   (We can change that)
+addi    s2, zero, 31    #Jan
+addi    s3, zero, 28    #Feb
+addi    s4, zero, 30    #Apr
+addi    s5, zero, 0     #Sum (all days)
+addi    s6, zero, 0     #register for saving link (for branch)
+addi    s7, zero, 0     #string from Data_memory
+
+#Checking for day (because we have check for month)
+.case1_ch:
+    addi    t4, zero, 32     #min days
+    bge     s1, t4, .error
+    
+    j       .case2_ch
+.case2_ch:
+    addi    t5, zero, 1    #max days
+    blt     s1, t5 .error
+    
+    j       .case1
+.error:
+    lw      s7, 0x1C(sp)
+    j       .done
+
+#Calculating Sum
+.case1:
+    addi    t0, zero, 1
+    bne     s0, t0, .case2
+    
+    add     s5, zero, s1
+    j       .while
+.case2:
+    addi    t0, zero, 2
+    bne     s0, t0, .case3
+    
+    add     s5, zero, s1
+    add     s5, s5, s2
+    j       .while
+.case3:
+    addi    t0, zero, 3
+    bne     s0, t0, .case4
+    
+    add     s5, zero, s1
+    add     s5, s5, s2
+    add     s5, s5, s3
+    j       .while
+.case4:
+    addi    t0, zero, 4
+    bne     s0, t0, .case5
+    
+    add     s5, zero, s1
+    add     s5, s5, s2
+    add     s5, s5, s3
+    add     s5, s5, s2
+    j       .while
+.case5:
+    addi    t0, zero, 5
+    bne     s0, t0, .case6
+    
+    add     s5, zero, s1
+    add     s5, s5, s2
+    add     s5, s5, s3
+    add     s5, s5, s2
+    add     s5, s5, s4
+    j       .while
+.case6:
+    addi    t0, zero, 6
+    bne     s0, t0, .case7
+    
+    add     s5, zero, s1
+    add     s5, s5, s2
+    add     s5, s5, s3
+    add     s5, s5, s2
+    add     s5, s5, s4
+    add     s5, s5, s2
+    j       .while
+.case7:
+    addi    t0, zero, 7
+    bne     s0, t0, .case8
+    
+    add     s5, zero, s1
+    add     s5, s5, s2
+    add     s5, s5, s3
+    add     s5, s5, s2
+    add     s5, s5, s4
+    add     s5, s5, s2
+    add     s5, s5, s4
+    j       .while
+.case8:
+    addi    t0, zero, 8
+    bne     s0, t0, .case9
+    
+    add     s5, zero, s1
+    add     s5, s5, s2
+    add     s5, s5, s3
+    add     s5, s5, s2
+    add     s5, s5, s4
+    add     s5, s5, s2
+    add     s5, s5, s4
+    add     s5, s5, s2
+    j       .while
+.case9:
+    addi    t0, zero, 9
+    bne     s0, t0, .case10
+    
+    add     s5, zero, s1
+    add     s5, s5, s2
+    add     s5, s5, s3
+    add     s5, s5, s2
+    add     s5, s5, s4
+    add     s5, s5, s2
+    add     s5, s5, s4
+    add     s5, s5, s2
+    add     s5, s5, s2
+    j       .while
+.case10:
+    addi    t0, zero, 10
+    bne     s0, t0, .case11
+    
+    add     s5, zero, s1
+    add     s5, s5, s2
+    add     s5, s5, s3
+    add     s5, s5, s2
+    add     s5, s5, s4
+    add     s5, s5, s2
+    add     s5, s5, s4
+    add     s5, s5, s2
+    add     s5, s5, s2
+    add     s5, s5, s4
+    j       .while
+.case11:
+    addi    t0, zero, 11
+    bne     s0, t0, .case12
+    
+    add     s5, zero, s1
+    add     s5, s5, s2
+    add     s5, s5, s3
+    add     s5, s5, s2
+    add     s5, s5, s4
+    add     s5, s5, s2
+    add     s5, s5, s4
+    add     s5, s5, s2
+    add     s5, s5, s2
+    add     s5, s5, s4
+    add     s5, s5, s2
+    j       .while
+.case12:
+    addi    t0, zero, 12
+    bne     s0, t0, .default1
+    
+    add     s5, zero, s1
+    add     s5, s5, s2
+    add     s5, s5, s3
+    add     s5, s5, s2
+    add     s5, s5, s4
+    add     s5, s5, s2
+    add     s5, s5, s4
+    add     s5, s5, s2
+    add     s5, s5, s2
+    add     s5, s5, s4
+    add     s5, s5, s2
+    add     s5, s5, s4
+    j       .while
+.default1:
+    lw      s7, 0x1C(sp)
+    j       .done
+
+.while:
+    addi    t2, zero, 7
+    blt     s5, t2, .switch
+    
+    sub     s5, s5, t2
+    j       .while
+    
+.switch:
+.case1_:
+    addi    t3, zero, 1
+    bne     s5, t3, .case2_
+    
+    lw      s7, 0x14(sp)
+    j       .done
+.case2_:
+    addi    t3, zero, 2
+    bne     s5, t3, .case3_
+    
+    lw      s7, 0x18(sp)
+    j       .done
+.case3_:
+    addi    t3, zero, 3
+    bne     s5, t3, .case4_
+    
+    lw      s7, 0x0(sp)
+    j       .done
+.case4_:
+    addi    t3, zero, 4
+    bne     s5, t3, .case5_
+    
+    lw      s7, 0x4(sp)
+    j       .done
+.case5_:
+    addi    t3, zero, 5
+    bne     s5, t3, .case6_
+    
+    lw      s7, 0x8(sp)
+    j       .done
+.case6_:
+    addi    t3, zero, 6
+    bne     s5, t3, .case7_
+    
+    lw      s7, 0xC(sp)
+    j       .done
+.case7_:
+    addi    t3, zero, 0
+    bne     s5, t3, .default2
+    
+    lw      s7, 0x10(sp)
+    j       .done
+.default2:
+    lw      s7, 0x1C(sp)
+    j       .done
+.done:
